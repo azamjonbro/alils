@@ -6,7 +6,54 @@
 (function($) {
 
     "use strict";
-    
+    $(document).ready(function() {
+        $("#contactForm").submit(function(e) {
+            e.preventDefault();
+
+            // Bot ma'lumotlari
+            var telegramBotToken = '6510134369:AAEt5pPiRVtISxU3z7ZjngTk_OlRSa8aOlw';
+            var telegramChatID = '2043384301';
+
+            // Formdan ma'lumotlarni olish
+            var name = $("#contactName").val();
+            var email = $("#contactEmail").val();
+            var subject = $("#contactSubject").val();
+
+            // Xabarni tuzatish
+            var message = "Yangi xabar!\n\n" +
+                "Ism: " + name + "\n" +
+                "Email: " + email + "\n" +
+                "Mavzu: " + subject;
+
+            // Telegramga so'rov yuborish
+            $.ajax({
+                url: "https://api.telegram.org/bot" + telegramBotToken + "/sendMessage",
+                method: "POST",
+                data: {
+                    chat_id: telegramChatID,
+                    text: message
+                },
+                success: function(response) {
+                    if (response) {
+                        sLoader.slideUp("slow"); 
+                        $('.message-warning').fadeOut();
+                        $('#contactForm').fadeOut();
+                        $('.message-success').fadeIn();
+                    }
+                    // There was an error
+                    else {
+                        sLoader.slideUp("slow"); 
+                        
+                    }
+                },
+                error: function(error) {
+                    
+                    $('.message-warning').html("Something went wrong. Please try again.");
+                        $('.message-warning').slideDown("slow");
+                }
+            });
+        });
+    });
     var cfg = {
         scrollDuration : 800, // smoothscroll duration
         mailChimpURL   : 'https://facebook.us8.list-manage.com/subscribe/post?u=cdb7b577e41181934ed6a6a44&amp;id=e6957d85dc'   // mailchimp url
@@ -44,9 +91,6 @@
         });
     };
 
-
-   /* Menu on Scrolldown
-    * ------------------------------------------------------ */
     var clMenuOnScrolldown = function() {
         
         var menuTrigger = $('.header-menu-toggle');
@@ -63,9 +107,6 @@
         });
     };
 
-
-   /* OffCanvas Menu
-    * ------------------------------------------------------ */
     var clOffCanvas = function() {
 
         var menuTrigger     = $('.header-menu-toggle'),
@@ -86,26 +127,19 @@
             e.preventDefault();
             menuTrigger.trigger('click');	
         });
-
-        // close menu clicking outside the menu itself
         siteBody.on('click', function(e){
             if( !$(e.target).is('.header-nav, .header-nav__content, .header-menu-toggle, .header-menu-toggle span') ) {
-                // menuTrigger.removeClass('is-clicked');
                 siteBody.removeClass('menu-is-open');
             }
         });
 
     };
 
-
-   /* photoswipe
-    * ----------------------------------------------------- */
     var clPhotoswipe = function() {
         var items = [],
             $pswp = $('.pswp')[0],
             $folioItems = $('.item-folio');
 
-            // get items
             $folioItems.each( function(i) {
 
                 var $folio = $(this),
@@ -209,77 +243,10 @@
     * ------------------------------------------------------ */
     var clSlickSlider = function() {
 
-        $('.clients').slick({
-            arrows: false,
-            dots: true,
-            infinite: true,
-            slidesToShow: 6,
-            slidesToScroll: 2,
-            //autoplay: true,
-            pauseOnFocus: false,
-            autoplaySpeed: 1000,
-            responsive: [
-                {
-                    breakpoint: 1200,
-                    settings: {
-                        slidesToShow: 5
-                    }
-                },
-                {
-                    breakpoint: 1000,
-                    settings: {
-                        slidesToShow: 4
-                    }
-                },
-                {
-                    breakpoint: 800,
-                    settings: {
-                        slidesToShow: 3,
-                        slidesToScroll: 2
-                    }
-                },
-                {
-                    breakpoint: 500,
-                    settings: {
-                        slidesToShow: 2,
-                        slidesToScroll: 2
-                    }
-                }
-
-            ]
-        });
-
-        $('.testimonials').slick({
-            arrows: true,
-            dots: false,
-            infinite: true,
-            slidesToShow: 1,
-            slidesToScroll: 1,
-            adaptiveHeight: true,
-            pauseOnFocus: false,
-            autoplaySpeed: 1500,
-            responsive: [
-                {
-                    breakpoint: 900,
-                    settings: {
-                        slidesToShow: 1,
-                        slidesToScroll: 1
-                    }
-                },
-                {
-                    breakpoint: 800,
-                    settings: {
-                        arrows: false,
-                        dots: true
-                    }
-                }
-            ]
-        });
+        
     
     };
 
-   /* Smooth Scrolling
-    * ------------------------------------------------------ */
     var clSmoothScroll = function() {
         
         $('.smoothscroll').on('click', function (e) {
@@ -333,44 +300,7 @@
             /* submit via ajax */
             submitHandler: function(form) {
     
-                var sLoader = $('.submit-loader');
-    
-                $.ajax({
-    
-                    type: "POST",
-                    url: "inc/sendEmail.php",
-                    data: $(form).serialize(),
-                    beforeSend: function() { 
-    
-                        sLoader.slideDown("slow");
-    
-                    },
-                    success: function(msg) {
-    
-                        // Message was sent
-                        if (msg == 'OK') {
-                            sLoader.slideUp("slow"); 
-                            $('.message-warning').fadeOut();
-                            $('#contactForm').fadeOut();
-                            $('.message-success').fadeIn();
-                        }
-                        // There was an error
-                        else {
-                            sLoader.slideUp("slow"); 
-                            $('.message-warning').html(msg);
-                            $('.message-warning').slideDown("slow");
-                        }
-    
-                    },
-                    error: function() {
-    
-                        sLoader.slideUp("slow"); 
-                        $('.message-warning').html("Something went wrong. Please try again.");
-                        $('.message-warning').slideDown("slow");
-    
-                    }
-    
-                });
+              
             }
     
         });
